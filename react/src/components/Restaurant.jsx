@@ -5,8 +5,6 @@ import './Restaurant.css';
 import { useQuery, gql } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 
-import {allRestaurantsTest} from '../assets/test_data.json'
-import {testaurant} from '../assets/testaraunt.json'
 import DishFormModal from './DishFormModal';
 import Loader from './Loader'
 import IconButton from '@material-ui/core/IconButton';

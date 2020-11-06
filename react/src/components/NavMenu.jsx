@@ -18,7 +18,7 @@ export default function NavMenu(props) {
     return (
         <div className={props.className}>
             <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                <AccountCircle/>
+                <AccountCircle color="inherit"/>
             </Button>
             <Menu
                 id="simple-menu"

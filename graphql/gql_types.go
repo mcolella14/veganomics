@@ -218,3 +218,14 @@ var distanceType = graphql.NewObject(
 		},
 	},
 )
+
+var filtersInputType = graphql.NewInputObject(
+	graphql.InputObjectConfig{
+		Name: "FiltersInput",
+		Fields: graphql.InputObjectConfigFieldMap{
+			"genres": &graphql.InputObjectFieldConfig{
+				Type: graphql.NewList(graphql.String),
+			},
+		},
+	},
+)

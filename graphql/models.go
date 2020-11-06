@@ -60,3 +60,7 @@ type OnlineOrdering struct {
 	UberEats  string `bson:"uberEats, omitempty"`
 	Postmates string `bson:"postmates, omitempty"`
 }
+
+type Filters struct {
+	Genres []string `bson:"genres"`
+}

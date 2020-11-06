@@ -5,17 +5,11 @@ import AppBar from '@material-ui/core/AppBar';
 import NavMenu from './NavMenu'
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import {LocationContext} from '../App'
 import LocationSearch from './LocationSearch'
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        // flexGrow: 1,
-    },
     menuButton: {
         // marginRight: theme.spacing(2),
         flex: '1 0 0',
@@ -40,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     
 }));
 
-export default function NavBar() {
+export default function NavBar(props) {
     const classes = useStyles();
     const {location, updateLocation} = useContext(LocationContext)
     const [changingLocation, setChangingLocation] = useState(false)
@@ -83,19 +77,16 @@ export default function NavBar() {
     console.log(changingLocation)
 
     return (
-        <div className={classes.root}>
-            <AppBar position="static" color="transparent">
-                <Toolbar className={classes.toolbar}>
-                    <NavMenu className={classes.menuButton}/>
-                    {locationEl}
-                    <a className={classes.title} href="/">
-                        <Typography variant="h1">
-                            <Box fontWeight="fontWeightMedium">Veganomics</Box>
-                        </Typography>
-                    </a>
-                    <div className={classes.blankDiv}/>
+        <React.Fragment>
+            <AppBar position="fixed" className={props.className}>
+                <Toolbar>
+                <Typography variant="h6" noWrap>
+                    Veganomics
+                </Typography>
+                <NavMenu className={classes.menuButton}/>
                 </Toolbar>
             </AppBar>
-        </div>
+            <Toolbar/>
+        </React.Fragment>
     )
 }

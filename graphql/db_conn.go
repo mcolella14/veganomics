@@ -58,7 +58,7 @@ func getRestaurantByName(slug string) []RestaurantResponse {
 	return restaurants
 }
 
-func getAllRestaurants() []Restaurant {
+func getAllRestaurants(filters Filters) []Restaurant {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGODB_CONN_STR")))
@@ -70,7 +70,7 @@ func getAllRestaurants() []Restaurant {
 	collection := client.Database("veganomics").Collection("restaurants")
 
 	var restaurants []Restaurant
-	filter := bson.M{}
+	filter := bson.M{"genres": bson.M{"$in": filters.Genres}}
 	opts := options.Find()
 	cursor, err2 := collection.Find(ctx, filter, opts)
 	if err2 != nil {

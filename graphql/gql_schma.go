@@ -37,6 +37,9 @@ func initSchema() graphql.Schema {
 				"coordinates": &graphql.ArgumentConfig{
 					Type: coordinatesInputType,
 				},
+				"filters": &graphql.ArgumentConfig{
+					Type: filtersInputType,
+				},
 			},
 			Resolve: restaurantQueryResolver,
 		},
@@ -79,6 +82,7 @@ func initSchema() graphql.Schema {
 
 func restaurantQueryResolver(p graphql.ResolveParams) (interface{}, error) {
 	coordinatesArg, ok2 := p.Args["coordinates"]
+	filtersArg, ok3 := p.Args["filters"]
 	fmt.Println(p.Args)
 	if slug, ok := p.Args["slug"]; ok {
 		var coordinates Coordinates
@@ -91,24 +95,29 @@ func restaurantQueryResolver(p graphql.ResolveParams) (interface{}, error) {
 			fmt.Println(distance)
 			return restaurant, nil
 		}
-		log.Fatal("Need to have coordinates as a parameter")
+		return nil, errors.New("Must have coordinates as an arg")
 
 	}
-	if ok2 {
-		var restaurantsToReturn []RestaurantResponse
-		var coordinates Coordinates
-		mapstructure.Decode(coordinatesArg, &coordinates)
-		for _, rest := range getAllRestaurants() {
-			var returnRest RestaurantResponse
-			mapstructure.Decode(rest, &returnRest)
-			distance := getDistance(coordinates, rest.Location.Coordinates)
-			returnRest.Distance = distance
-			restaurantsToReturn = append(restaurantsToReturn, returnRest)
+	if ok3 {
+		var filters Filters
+		mapstructure.Decode(filtersArg, &filters)
+		if ok2 {
+			var restaurantsToReturn []RestaurantResponse
+			var coordinates Coordinates
+			mapstructure.Decode(coordinatesArg, &coordinates)
+			for _, rest := range getAllRestaurants(filters) {
+				var returnRest RestaurantResponse
+				mapstructure.Decode(rest, &returnRest)
+				distance := getDistance(coordinates, rest.Location.Coordinates)
+				returnRest.Distance = distance
+				restaurantsToReturn = append(restaurantsToReturn, returnRest)
+			}
+			fmt.Println(restaurantsToReturn)
+			return restaurantsToReturn, nil
 		}
-		fmt.Println(restaurantsToReturn)
-		return restaurantsToReturn, nil
+		return nil, errors.New("Must have coordinates as an arg")
 	}
-	return getAllRestaurants(), nil
+	return nil, errors.New("Must have filters as an arg")
 }
 
 func restaurantMutationResolver(p graphql.ResolveParams) (interface{}, error) {

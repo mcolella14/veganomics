@@ -15,8 +15,12 @@ import PickLocation from './components/PickLocation.jsx';
 import NavBar from './components/NavBar.jsx'
 import { LabelImportant } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 
 export const LocationContext = React.createContext();
+
+const useStyles = makeStyles((theme) => ({
+}))
 
 function LocationProvider (props) {
   const [location, setLocation] = useState(() => {
@@ -79,29 +83,33 @@ const client = new ApolloClient({
 });
 
 export default function App() {
+  const classes = useStyles()
   return (
     <Router>
       <div className="App">
         <ApolloProvider client={client}>
           <LocationProvider>
-            <header>
-              <NavBar/>
-            </header>
-            <div className="main-block">
-              <Switch>
-                <AddressRoute exact path="/">
-                  <RestaurantList/>
-                </AddressRoute>
-                <AddressRoute path="/restaurants/:slug">
-                  <Restaurant/>
-                </AddressRoute>
-                <AddressRoute path="/addRestaurant">
-                  <RestaurantForm/>
-                </AddressRoute>
-                <Route path="/pickLocation">
-                  <PickLocation/>
-                </Route>
-              </Switch>
+            <div className={classes.root}>
+              <div className="main-block">
+                <Switch>
+                  <AddressRoute exact path="/">
+                    {/* No nav bar here because we use it in the component */}
+                    <RestaurantList/>
+                  </AddressRoute>
+                  <AddressRoute path="/restaurants/:slug">
+                    <NavBar/>
+                    <Restaurant/>
+                  </AddressRoute>
+                  <AddressRoute path="/addRestaurant">
+                    <NavBar/>
+                    <RestaurantForm/>
+                  </AddressRoute>
+                  <Route path="/pickLocation">
+                    <NavBar/>
+                    <PickLocation/>
+                  </Route>
+                </Switch>
+              </div>
             </div>
           </LocationProvider>
         </ApolloProvider>
