@@ -70,9 +70,12 @@ func getAllRestaurants(filters Filters) []Restaurant {
 	collection := client.Database("veganomics").Collection("restaurants")
 
 	var restaurants []Restaurant
-	filter := bson.M{"genres": bson.M{"$in": filters.Genres}}
+	filterBson := bson.M{}
+	if len(filters.Genres) > 0 {
+		filterBson["genres"] = bson.M{"$in": filters.Genres}
+	}
 	opts := options.Find()
-	cursor, err2 := collection.Find(ctx, filter, opts)
+	cursor, err2 := collection.Find(ctx, filterBson, opts)
 	if err2 != nil {
 		log.Fatal(err2)
 	}

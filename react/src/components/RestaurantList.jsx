@@ -73,7 +73,7 @@ function RestaurantList (props){
     }
   )
   const [ filters, setFilters ] = useState({
-    "genres": ["American", "Mexican"]
+    "genres": []
   })
   const {loading, error, data} = useQuery(restaurantsQuery, {
     variables: {
