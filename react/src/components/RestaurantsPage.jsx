@@ -4,12 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import NavBar from './NavBar'
 
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import { LocationContext } from '../App'
-import MyLoader from "./Loader"
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 
@@ -17,6 +11,8 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+
+import RestaurantsList from './RestaurantsList'
 
 
 const testUrl = 'https://veganomics.s3.us-east-2.amazonaws.com/Restaurants/Cleveland+Vegan/cleveland_vegan_logo.png';
@@ -49,23 +45,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const restaurantsQuery = gql`
-    query GetStuff($coordinates: CoordinatesInput, $filters: FiltersInput){
-      restaurant(coordinates: $coordinates, filters: $filters) {
-        name,
-        slug,
-        titleImage,
-        distance {
-          text,
-          value
-        },
-        genres
-      }
-    }
-  `
-
-function RestaurantList (props){
-  const {location} = useContext(LocationContext)
+export default function RestaurantsPage() {
+  
   const classes = useStyles();
   const [ sortFunc, setSortFunc ] = useState(
     () => {
@@ -75,22 +56,9 @@ function RestaurantList (props){
   const [ filters, setFilters ] = useState({
     "genres": []
   })
-  const {loading, error, data} = useQuery(restaurantsQuery, {
-    variables: {
-      "coordinates": location.coordinates,
-      "filters": filters
-    }
-  });
   
-  if (loading) {
-    return <MyLoader/>
-  }
-  if (error) {
-    return <p>Something went wrong /:</p>
-  }
+  
 
-  let restaurantsToDisplay = data.restaurant.slice()
-  restaurantsToDisplay.sort(sortFunc);
 
   const handleFilterClick = (type, value) => {
     
@@ -135,30 +103,8 @@ function RestaurantList (props){
       </Drawer>
       <main className={classes.content}>
         <Toolbar/>
-        <GridList cols={4} spacing={20}>
-        <GridListTile key="Subheader" cols={4} style={{ height: 'auto' }}>
-            <ListSubheader component={"h2"}>{filters.genres.join(", ") || "Near you"}</ListSubheader>
-        </GridListTile>
-        {
-          restaurantsToDisplay.map((restaurant, i) => {
-            return (
-              
-              <GridListTile className={classes.gridList}>
-                <a href={'/restaurants/' + restaurant.slug}>
-                  <img src={restaurant.titleImage} alt={restaurant.name} className={classes.image}/>
-                    <GridListTileBar 
-                      title={restaurant.name}
-                      subtitle={restaurant.distance.text}
-                    />
-                </a>
-              </GridListTile>
-            )
-          })
-        }
-      </GridList>
+        <RestaurantsList classes={classes} filters={filters} sortFunc={sortFunc}/>
       </main>
     </div>
   )
 }
-
-export default RestaurantList;

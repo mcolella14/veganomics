@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Link from '@material-ui/core/Link';
 
 export default function NavMenu(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -28,13 +29,12 @@ export default function NavMenu(props) {
                 onClose={handleClose}
                 transformOrigin={{vertical: -30}}
             >   
-                <a href="/">
+                <Link href="/">
                     <MenuItem onClick={handleClose}>Home</MenuItem>
-                </a>
-                <a href="/addRestaurant">
+                </Link>
+                <Link href="/addRestaurant">
                     <MenuItem onClick={handleClose}>Add a Restauarant</MenuItem>
-                </a>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                </Link>
             </Menu>
         </div>
     )

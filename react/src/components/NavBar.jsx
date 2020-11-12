@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {LocationContext} from '../App'
 import LocationSearch from './LocationSearch'
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles((theme) => ({
     menuButton: {
@@ -80,9 +81,11 @@ export default function NavBar(props) {
         <React.Fragment>
             <AppBar position="fixed" className={props.className}>
                 <Toolbar>
-                <Typography variant="h6" noWrap>
-                    Veganomics
-                </Typography>
+                <Link href="/" color="inherit" underline="none">
+                    <Typography variant="h6" noWrap>
+                        Veganomics
+                    </Typography>
+                </Link>
                 <NavMenu className={classes.menuButton}/>
                 </Toolbar>
             </AppBar>

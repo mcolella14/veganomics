@@ -8,7 +8,7 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import RestaurantList from './components/RestaurantList.jsx'
+import RestaurantsPage from './components/RestaurantsPage.jsx'
 import Restaurant from './components/Restaurant.jsx';
 import RestaurantForm from './components/RestaurantForm.jsx'
 import PickLocation from './components/PickLocation.jsx';
@@ -94,7 +94,7 @@ export default function App() {
                 <Switch>
                   <AddressRoute exact path="/">
                     {/* No nav bar here because we use it in the component */}
-                    <RestaurantList/>
+                    <RestaurantsPage/>
                   </AddressRoute>
                   <AddressRoute path="/restaurants/:slug">
                     <NavBar/>
