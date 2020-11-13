@@ -3,7 +3,7 @@ import slugify from 'slugify'
 import { useState, useEffect } from 'react';
 import {TextField, Button, FormControlLabel} from '@material-ui/core'
 import { gql, useMutation } from '@apollo/client';
-import MyLoader from "./Loader";
+import MyLoader from "./Loader.jsx";
 import FormMap from "./Map";
 import "./RestaurantForm.css"
 import Typography from '@material-ui/core/Typography';

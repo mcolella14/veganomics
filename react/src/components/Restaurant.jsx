@@ -6,7 +6,7 @@ import { useQuery, gql } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 
 import DishFormModal from './DishFormModal';
-import Loader from './Loader'
+import Loader from './Loader.jsx'
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     margin: "5px 0 5px 0"
   },
-  orderingLink: {
-    borderColor: "green",
-    margin: "5px 0 5px 0"
-  }
+  // orderingLink: {
+  //   borderColor: theme.palette.secondary.main,
+  //   margin: "5px 0 5px 0"
+  // }
 }))
 
 const restaurantQuery = gql`
@@ -134,7 +134,7 @@ function Restaurant (props) {
         <ButtonGroup>
           {
             Object.entries(onlineOrderingObj).map((obj) => {
-              return <Button key={obj[0]} href={obj[1]} target="_blank" rel="noopener" className={classes.orderingLink}>{obj[0]}</Button>
+              return <Button key={obj[0]} href={obj[1]} target="_blank" rel="noopener" color="secondary">{obj[0]}</Button>
             })
           }
         </ButtonGroup>

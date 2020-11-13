@@ -19,7 +19,7 @@ export default function NavMenu(props) {
     return (
         <div className={props.className}>
             <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                <AccountCircle color="inherit"/>
+                <AccountCircle color="secondary"/>
             </Button>
             <Menu
                 id="simple-menu"
@@ -29,10 +29,10 @@ export default function NavMenu(props) {
                 onClose={handleClose}
                 transformOrigin={{vertical: -30}}
             >   
-                <Link href="/">
+                <Link href="/" underline="none" color="secondary">
                     <MenuItem onClick={handleClose}>Home</MenuItem>
                 </Link>
-                <Link href="/addRestaurant">
+                <Link href="/addRestaurant" underline="none" color="secondary">
                     <MenuItem onClick={handleClose}>Add a Restauarant</MenuItem>
                 </Link>
             </Menu>

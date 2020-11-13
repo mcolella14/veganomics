@@ -2,7 +2,6 @@ import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import React from 'react';
 import { useState, useEffect } from 'react';
 import {TextField} from '@material-ui/core'
-import Loader from './Loader';
 import Autocomplete from 'react-google-autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import {googleMaps as apiKey} from '../keys.json';

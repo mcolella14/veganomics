@@ -13,11 +13,25 @@ import Restaurant from './components/Restaurant.jsx';
 import RestaurantForm from './components/RestaurantForm.jsx'
 import PickLocation from './components/PickLocation.jsx';
 import NavBar from './components/NavBar.jsx'
-import { LabelImportant } from '@material-ui/icons';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+
 
 export const LocationContext = React.createContext();
+
+// 00BD9D
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#00BD9D'
+    },
+    secondary: {
+      main: '#5F4BB6'
+    }
+  },
+});
+
 
 const useStyles = makeStyles((theme) => ({
 }))
@@ -86,34 +100,36 @@ export default function App() {
   const classes = useStyles()
   return (
     <Router>
-      <div className="App">
-        <ApolloProvider client={client}>
-          <LocationProvider>
-            <div className={classes.root}>
-              <div className="main-block">
-                <Switch>
-                  <AddressRoute exact path="/">
-                    {/* No nav bar here because we use it in the component */}
-                    <RestaurantsPage/>
-                  </AddressRoute>
-                  <AddressRoute path="/restaurants/:slug">
-                    <NavBar/>
-                    <Restaurant/>
-                  </AddressRoute>
-                  <AddressRoute path="/addRestaurant">
-                    <NavBar/>
-                    <RestaurantForm/>
-                  </AddressRoute>
-                  <Route path="/pickLocation">
-                    <NavBar/>
-                    <PickLocation/>
-                  </Route>
-                </Switch>
+      <ThemeProvider theme={theme}>
+        <div className="App">
+          <ApolloProvider client={client}>
+            <LocationProvider>
+              <div className={classes.root}>
+                <div className="main-block">
+                  <Switch>
+                    <AddressRoute exact path="/">
+                      {/* No nav bar here because we use it in the component */}
+                      <RestaurantsPage/>
+                    </AddressRoute>
+                    <AddressRoute path="/restaurants/:slug">
+                      <NavBar/>
+                      <Restaurant/>
+                    </AddressRoute>
+                    <AddressRoute path="/addRestaurant">
+                      <NavBar/>
+                      <RestaurantForm/>
+                    </AddressRoute>
+                    <Route path="/pickLocation">
+                      <NavBar/>
+                      <PickLocation/>
+                    </Route>
+                  </Switch>
+                </div>
               </div>
-            </div>
-          </LocationProvider>
-        </ApolloProvider>
-      </div>
+            </LocationProvider>
+          </ApolloProvider>
+        </div>
+      </ThemeProvider>
     </Router>
   )
 }

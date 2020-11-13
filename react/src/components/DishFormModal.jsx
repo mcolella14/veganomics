@@ -14,7 +14,7 @@ import NumberFormat from 'react-number-format';
 import { useForm, Controller } from "react-hook-form";
 import {TextField, Button, Checkbox} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import MyLoader from "./Loader"
+import Loader from "./Loader.jsx"
 
 const mutation = gql`
     mutation InsertDish($dish: DishInput, $restSlug: String){
@@ -125,7 +125,7 @@ export default function DishFormModal (props) {
     let dialogContent
     let dialogTitle = null
     if (loading) {
-        dialogContent = <MyLoader/>
+        dialogContent = <Loader/>
     }
     if (error) {
         dialogContent = <div>Something went wrong /:</div>

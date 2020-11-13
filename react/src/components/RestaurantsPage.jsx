@@ -26,9 +26,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
@@ -81,7 +78,7 @@ export default function RestaurantsPage() {
 
   return (
     <div className={classes.root}>
-      <NavBar className={classes.appBar}/>
+      <NavBar/>
       <Drawer
         className={classes.drawer}
         variant="permanent"

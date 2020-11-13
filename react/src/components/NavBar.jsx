@@ -13,9 +13,9 @@ import Link from '@material-ui/core/Link';
 const useStyles = makeStyles((theme) => ({
     menuButton: {
         // marginRight: theme.spacing(2),
-        flex: '1 0 0',
-        justifyContent: 'flex-start',
-        display: 'flex',
+        // flex: '1 0 0',
+        // justifyContent: 'flex-start',
+        // display: 'flex',
     },
     title: {
         // justifyContent: 'center',
@@ -31,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
     },
     location: {
         cursor: 'pointer',
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: 'white',
+    },
+    innerAppBar: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between'
     }
     
 }));
@@ -79,14 +88,16 @@ export default function NavBar(props) {
 
     return (
         <React.Fragment>
-            <AppBar position="fixed" className={props.className}>
+            <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                <Link href="/" color="inherit" underline="none">
-                    <Typography variant="h6" noWrap>
-                        Veganomics
-                    </Typography>
-                </Link>
-                <NavMenu className={classes.menuButton}/>
+                <div className={classes.innerAppBar}>
+                    <Link href="/" color="inherit" underline="none">
+                        <Typography variant="h6" noWrap>
+                            Veganomics
+                        </Typography>
+                    </Link>
+                    <NavMenu className={classes.menuButton}/>
+                </div>
                 </Toolbar>
             </AppBar>
             <Toolbar/>

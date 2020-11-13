@@ -6,7 +6,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { LocationContext } from '../App'
-import MyLoader from "./Loader"
+import MyLoader from "./Loader.jsx"
 
 const restaurantsQuery = gql`
     query GetStuff($coordinates: CoordinatesInput, $filters: FiltersInput){
