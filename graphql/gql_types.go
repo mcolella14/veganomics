@@ -138,6 +138,34 @@ var dishInputType = graphql.NewInputObject(
 	},
 )
 
+var dishGroupType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "DishGroup",
+		Fields: graphql.Fields{
+			"name": &graphql.Field{
+				Type: graphql.String,
+			},
+			"dishes": &graphql.Field{
+				Type: graphql.NewList(dishType),
+			},
+		},
+	},
+)
+
+var dishGroupInputType = graphql.NewInputObject(
+	graphql.InputObjectConfig{
+		Name: "DishGroupInput",
+		Fields: graphql.InputObjectConfigFieldMap{
+			"name": &graphql.InputObjectFieldConfig{
+				Type: graphql.String,
+			},
+			"dishes": &graphql.InputObjectFieldConfig{
+				Type: graphql.NewList(dishInputType),
+			},
+		},
+	},
+)
+
 var restaurantType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Restaurant",
@@ -148,8 +176,8 @@ var restaurantType = graphql.NewObject(
 			"slug": &graphql.Field{
 				Type: graphql.String,
 			},
-			"dishes": &graphql.Field{
-				Type: graphql.NewList(dishType),
+			"dishGroups": &graphql.Field{
+				Type: graphql.NewList(dishGroupType),
 			},
 			"location": &graphql.Field{
 				Type: locationType,
@@ -183,8 +211,8 @@ var restaurantInputType = graphql.NewInputObject(
 			"slug": &graphql.InputObjectFieldConfig{
 				Type: graphql.String,
 			},
-			"dishes": &graphql.InputObjectFieldConfig{
-				Type: graphql.NewList(dishInputType),
+			"dishGroups": &graphql.InputObjectFieldConfig{
+				Type: graphql.NewList(dishGroupInputType),
 			},
 			"location": &graphql.InputObjectFieldConfig{
 				Type: locationInputType,

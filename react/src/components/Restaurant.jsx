@@ -36,12 +36,15 @@ const restaurantQuery = gql`
     restaurant(slug: $slug, coordinates: $coordinates){
       name,
       slug,
-      dishes {
+      dishGroups {
+        name,
+        dishes {
           name,
           price,
           isVegan,
           isVeganAvailable,
           description
+        }
       },
       location {
         coordinates {
@@ -102,22 +105,25 @@ function Restaurant (props) {
       return <p>Something went wrong /:</p>
     }
     let headerText
-    let dishList
+    let dishList = []
     const restaurant = data.restaurant[0]
-    if (restaurant.dishes.length > 0) {
+    if (restaurant.dishGroups.length > 0) {
       
       headerText = 'See something missing for ' + restaurant.name + '? Submit a new dish to be added to the site'
-      dishList = (
-        <div className={'dish-list'}>
-          {restaurant.dishes.map((dish, i) => {
-              return <Dish key={dish.name} dish={dish} dietaryString={dietaryString}/>
-          })}
-        </div>
-      )
+      restaurant.dishGroups.forEach(group => {
+        const groupList = (
+          <div className={'dish-list'}>
+            <Typography>{group.name}</Typography>
+            {group.dishes.map((dish, i) => {
+                return <Dish key={dish.name} dish={dish} dietaryString={dietaryString}/>
+            })}
+          </div>
+        )
+        dishList.push(groupList);
+      })
     }
     else {
       headerText = "Looks like there aren't any dishes for " + restaurant.name + " yet, but you can submit a suggestion here!"
-      dishList = null
     }
 
     const onlineOrderingObj = {}
@@ -158,7 +164,8 @@ function Restaurant (props) {
         {dishList && dishList}
         <DishFormModal open={modalOpen}
                       handleClick={handleModalClick}
-                      restaurantSlug={slug}/>
+                      restaurantSlug={slug}
+                      dishGroups={restaurant.dishGroups.map(el => el.name)}/>
         <Typography>
           {headerText}
           <IconButton onClick={handleModalClick} color="green">

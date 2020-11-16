@@ -1,5 +1,4 @@
 import React from 'react';
-import './DishModal.css'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent';
@@ -16,12 +15,19 @@ import {TextField, Button, Checkbox} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import Loader from "./Loader.jsx"
 
+import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
+import MenuItem from '@material-ui/core/MenuItem';
+
 const mutation = gql`
-    mutation InsertDish($dish: DishInput, $restSlug: String){
-        createDish(dish: $dish, restSlug: $restSlug){
+    mutation InsertDish($dish: DishInput, $restSlug: String, $dishGroup: String){
+        createDish(dish: $dish, restSlug: $restSlug, dishGroup: $dishGroup){
             name,
-            dishes {
-                name
+            dishGroups {
+                name,
+                dishes {
+                    name
+                }
             }
         }
     }
@@ -65,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
     },
     error: {
         color: "red"
+    },
+    submitBtn: {
+        marginTop: '20px'
     }
 }));
 
@@ -100,6 +109,9 @@ const validation = {
     },
     dietary: {
         required: 'Gotta pick one'
+    },
+    dishGroup: {
+        required: 'Gotta pick one'
     }
 }
 
@@ -117,8 +129,10 @@ export default function DishFormModal (props) {
         }
         addDish({variables: {
             dish: dish,
-            restSlug: props.restaurantSlug
+            restSlug: props.restaurantSlug,
+            dishGroup: e.dishGroup
         }})
+        
         window.location.reload()
     }
 
@@ -179,8 +193,44 @@ export default function DishFormModal (props) {
                         control={control}
                     />
                     {!!errors.dietary && <p className={classes.error}>You must pick one</p>}
+
+                    <Controller
+                        defaultValue=""
+                        rules={validation.dishGroup}
+                        as={
+                            <Select 
+                                name="dishGroup"
+                                // inputRef={register(validation.dietary)}
+                                label="Menu Section"
+                                error={errors.dishGroup}
+                                helperText={errors.dishGroup?.message}
+                                input={<Input/>}
+                                MenuProps={{
+                                    anchorOrigin: {
+                                        vertical: "bottom",
+                                        horizontal: "left"
+                                    },
+                                    transformOrigin: {
+                                        vertical: -50,
+                                        horizontal: "left"
+                                    },
+                                    getContentAnchorEl: null
+                                }}
+                                
+                            >
+                                <MenuItem value="" disabled>Menu Section</MenuItem>
+                                {props.dishGroups.map((group) => (
+                                    <MenuItem key={group} value={group}>
+                                        {group}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        }
+                        name="dishGroup"
+                        control={control}
+                    />
                     
-                    <Button variant="contained" color="primary" type="submit">Submit a Dish</Button>
+                    <Button variant="contained" color="primary" type="submit" className={classes.submitBtn}>Submit a Dish</Button>
                 </form>
         )
     }

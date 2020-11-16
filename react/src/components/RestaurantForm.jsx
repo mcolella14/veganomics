@@ -25,6 +25,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 
+import MultiSelect from './MultiSelect'
+
 
 import { LocationContext } from '../App'
 
@@ -54,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'flex-start'
-        
     }
   }))
 
@@ -66,10 +67,6 @@ const mutation = gql`
         }
     }
 `
-const validateGenres = (val) => {
-    alert(val);
-    return val.length > 0;
-}
 
 const validation = {
     name: {
@@ -104,16 +101,27 @@ const validation = {
             atLeastOne: (val) => val.length > 0 || "Must select 1 or more genre",
             fewerThanSix:(val) => val.length < 6 || "Must select 5 or fewer genres"
         }
+    },
+    menuSections: {
+        validate: {
+            atLeastOne: (val) => val.length > 0 || "Must select 1 or more menu section",
+        }
     }
 }
 
 function createNewRestaurant (inputVals) {
     let slug = slugify(inputVals.name, {strict: true, lower: true})
+    const dishGroups = inputVals.menuSections.map(el => {
+        return {
+            name: el,
+            dishes: []
+        }
+    })
     return (
         {
             "name": inputVals.name,
             "slug": slug,
-            "dishes": [],
+            "dishGroups": dishGroups,
             "location": {
                 "address" : inputVals.location.formatted_address,
                 "coordinates": inputVals.location.coordinates
@@ -128,18 +136,15 @@ function createNewRestaurant (inputVals) {
             }
         }
     )
-}
-
-const defaultValues = {
-    genres: [],
-  };
-
+    }
 function RestaurantForm (props) {
     const classes = useStyles();
+    const [ currentSectionName, setCurrentSectionName ] = useState(null)
     const [ mutationError, setMutationError ] = useState(null)
     const [ location, setLocation] = useState(null)
     const { register, errors, handleSubmit, watch, setValue, control} = useForm();
     const genres = watch("genres");
+    const menuSections = watch("menuSections")
     const [addRestaurant, {data, loading}] = useMutation(mutation, {onError: e => setMutationError(e)})
 
     const [ doorDash, setDoorDash ] = useState(false)
@@ -158,15 +163,18 @@ function RestaurantForm (props) {
         });
     }
 
-    const handleGenreDelete = (chipToDelete) => {
-            console.log(chipToDelete);
-            console.log(genres)
-            setValue("genres", genres.filter((chip) => chip !== chipToDelete));
-          };
+    const handleSectionChange = () => {
+        setValue("menuSections", menuSections.concat([currentSectionName]));
+    }
+
+    const handleValueDelete = (chipToDelete) => {
+        setValue("menuSections", menuSections.filter((chip) => chip !== chipToDelete));
+    };
 
     const onSubmit = (e) => {
         e.location = location
         e.genres = genres
+        e.menuSections = menuSections
         const restaurant = createNewRestaurant(e)
         console.log(restaurant);
         alert(JSON.stringify(restaurant))
@@ -204,6 +212,44 @@ function RestaurantForm (props) {
                         className = {classes.input}
                     />
                 </React.Fragment>
+                <React.Fragment>
+                    <FormControl className={classes.input}>
+                        <Controller
+                        name="menuSections"
+                        value={menuSections}
+                        control={control} 
+                        defaultValue={[]}
+                        rules={validation.menuSections}
+                        as= {
+                            <React.Fragment>
+                                <TextField
+                                    name="menuSection"
+                                    error={!!errors.menuSections}
+                                    helperText={errors.menuSections?.message}
+                                    label="Menu Section"
+                                    onChange={e => setCurrentSectionName(e.target.value)}
+                                />
+                                <Button onClick={handleSectionChange}>Add Menu Section</Button>
+                            </React.Fragment>
+                        }
+                        >
+                        </Controller>
+                    </FormControl>
+                </React.Fragment>
+                { menuSections &&
+                    menuSections.map((value) => (
+                        <Chip 
+                            onMouseDown={(event) => {
+                                event.stopPropagation();
+                            }}
+                            key={value}
+                            label={value}
+                            clickable
+                            onDelete={() => handleValueDelete(value)}
+                            deleteIcon={<CloseIcon/>}
+                        />
+                    ))
+                }
                 <React.Fragment>
                     <TextField 
                         error={!!errors.titleImage}
@@ -246,81 +292,24 @@ function RestaurantForm (props) {
                     </Typography>
                 )}
                 <React.Fragment>
-                    <FormControl className={classes.input}>
-                        <InputLabel id="genres-label">Genres</InputLabel>
-                        <Controller
-                            name="genres"
-                            value={genres}
-                            control={control} 
-                            defaultValue={[]}
-                            rules={validation.genres}
-                            as={                                
-                                <Select
-                                    name="genres"
-                                    error={!!errors.genres}
-                                    helperText={errors.genres?.message}
-                                    labelId="genres-label"
-                                    multiple
-                                    input={<Input/>}
-                                    MenuProps={{
-                                        anchorOrigin: {
-                                            vertical: "bottom",
-                                            horizontal: "left"
-                                        },
-                                        transformOrigin: {
-                                            vertical: -50,
-                                            horizontal: "left"
-                                        },
-                                        getContentAnchorEl: null
-                                    }}
-                                    // className = {classes.input}
-                                    renderValue={(selected) => (
-                                        <div>
-                                        {
-                                        selected.map((value) => (
-                                            <Chip 
-                                                onMouseDown={(event) => {
-                                                    event.stopPropagation();
-                                                }}
-                                                key={value}
-                                                label={value}
-                                                clickable
-                                                onDelete={() => handleGenreDelete(value)}
-                                                deleteIcon={<CloseIcon/>}
-                                            />
-                                        ))
-                                        }
-                                        </div>
-                                    )}
-                                > 
-                                    <MenuItem value="" disabled>Genres</MenuItem>
-                                    {genreList.map((genre) => (
-                                        <MenuItem key={genre} value={genre}>
-                                            {genre}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            }
-                        />
-                    </FormControl>
+                    <MultiSelect
+                        label="Genres"
+                        value={genres}
+                        control={control}
+                        defaultValue={[]}
+                        rules={validation.genres}
+                        error={!!errors.genres}
+                        helperText={errors.genres?.message}
+                        name="genres"
+                        setValue={setValue}
+                        className={classes.input}
+                        possVals={genreList}
+                    />
                     <ErrorMessage
                         errors={errors}
                         name="genres"
                         as={<Typography className="MuiFormHelperText-root Mui-error"/>}
                     />
-
-                    
-                    {/* <List>
-                        {genres.map((genre) => (
-                            <Chip 
-                            key={genre}
-                            label={genre}
-                            clickable
-                            onDelete={handleGenreDelete}
-                            deleteIcon={<CloseIcon/>}
-                        />
-                        ))}
-                    </List> */}
                 </React.Fragment>
                 <React.Fragment>
                 <FormControl component="fieldset" className={classes.input}>
@@ -384,4 +373,5 @@ function RestaurantForm (props) {
         </div>
     )
 }
+
 export default RestaurantForm

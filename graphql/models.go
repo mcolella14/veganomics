@@ -9,7 +9,7 @@ type Restaurant struct {
 	Id             primitive.ObjectID `bson:"_id,omitempty"`
 	Name           string             `bson:"name,omitempty"`
 	Slug           string             `bson:"slug,omitempty`
-	Dishes         []Dish             `bson:"dishes"`
+	DishGroups     []DishGroup        `bson:"dishGroups"`
 	Location       Location           `bson:location, omitempty`
 	TitleImage     string             `bson:"titleImage, omitempty"`
 	Genres         []string           `bson:"genres, omitempty"`
@@ -17,11 +17,16 @@ type Restaurant struct {
 	OnlineOrdering OnlineOrdering     `bson:"onlineOrdering, omitempty"`
 }
 
+type DishGroup struct {
+	Name   string `bson:"name"`
+	Dishes []Dish `bson:"dishes"`
+}
+
 type RestaurantResponse struct {
 	Id             primitive.ObjectID `bson:"_id,omitempty"`
 	Name           string             `bson:"name,omitempty"`
 	Slug           string             `bson:"slug,omitempty`
-	Dishes         []Dish             `bson:"dishes"`
+	DishGroups     []DishGroup        `bson:"dishGroups"`
 	Location       Location           `bson:location, omitempty`
 	TitleImage     string             `bson:"titleImage, omitempty"`
 	Distance       maps.Distance      `bson:"distance, omitempty"`

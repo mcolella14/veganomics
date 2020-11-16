@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -113,7 +114,7 @@ func insertRestaurant(restaurant Restaurant) (*Restaurant, error) {
 	return &returnRestaurant, nil
 }
 
-func insertDish(dish Dish, slug string) Restaurant {
+func insertDish(dish Dish, slug string, dishGroup string) Restaurant {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGODB_CONN_STR")))
@@ -126,7 +127,15 @@ func insertDish(dish Dish, slug string) Restaurant {
 
 	opts := options.FindOneAndUpdate()
 	filter := bson.M{"slug": slug}
-	update := bson.D{{"$push", bson.D{{"dishes", dish}}}}
+	arrFilter := bson.D{{"elem.name", bson.D{{"$eq", dishGroup}}}}
+	arrFilters := make([]interface{}, 1)
+	arrFilters[0] = arrFilter
+	arrayFilters := options.ArrayFilters{
+		Filters: arrFilters,
+	}
+	opts.SetArrayFilters(arrayFilters)
+	update := bson.D{{"$push", bson.D{{"dishGroups.$[elem].dishes", dish}}}}
+	fmt.Printf("dish group is %v", dishGroup)
 
 	var returnRestaurant Restaurant
 	err2 := collection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&returnRestaurant)

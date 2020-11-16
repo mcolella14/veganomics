@@ -63,6 +63,9 @@ func initSchema() graphql.Schema {
 				"restSlug": &graphql.ArgumentConfig{
 					Type: graphql.String,
 				},
+				"dishGroup": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
 			},
 			Resolve: dishMutationResolver,
 		},
@@ -83,16 +86,13 @@ func initSchema() graphql.Schema {
 func restaurantQueryResolver(p graphql.ResolveParams) (interface{}, error) {
 	coordinatesArg, ok2 := p.Args["coordinates"]
 	filtersArg, ok3 := p.Args["filters"]
-	fmt.Println(p.Args)
 	if slug, ok := p.Args["slug"]; ok {
 		var coordinates Coordinates
 		mapstructure.Decode(coordinatesArg, &coordinates)
 		if ok2 {
 			restaurant := getRestaurantByName(slug.(string))
-			fmt.Printf("restaurant is %v \n", restaurant)
 			distance := getDistance(coordinates, restaurant[0].Location.Coordinates)
 			restaurant[0].Distance = distance
-			fmt.Println(distance)
 			return restaurant, nil
 		}
 		return nil, errors.New("Must have coordinates as an arg")
@@ -112,7 +112,6 @@ func restaurantQueryResolver(p graphql.ResolveParams) (interface{}, error) {
 				returnRest.Distance = distance
 				restaurantsToReturn = append(restaurantsToReturn, returnRest)
 			}
-			fmt.Println(restaurantsToReturn)
 			return restaurantsToReturn, nil
 		}
 		return nil, errors.New("Must have coordinates as an arg")
@@ -127,13 +126,9 @@ func restaurantMutationResolver(p graphql.ResolveParams) (interface{}, error) {
 		mapstructure.Decode(restaurant, &restaurantToInsert)
 		returnedRestaurant, err := insertRestaurant(restaurantToInsert)
 		err2, ok := err.(mongo.WriteException)
-		fmt.Printf("%T\n", err)
-		fmt.Printf("%T\n", err2)
-		fmt.Println(ok)
 		if ok {
 			fmt.Printf("%v\n", err2.WriteErrors[0].Message)
 			fmt.Printf("%v\n", err2.WriteErrors[0].Code)
-			fmt.Printf("%v\n", err2.WriteErrors[0].Index)
 		}
 		if err != nil {
 			switch myErr := err.(type) {
@@ -162,8 +157,12 @@ func dishMutationResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok2 {
 		log.Fatal("Need to have restSlug as a paramater")
 	}
+	dishGroup, ok3 := p.Args["dishGroup"]
+	if !ok3 {
+		log.Fatal("Need to have dishGroup as a paramater")
+	}
 	var dishToInsert Dish
 	mapstructure.Decode(dish, &dishToInsert)
-	returnedRestaurant := insertDish(dishToInsert, restSlug.(string))
+	returnedRestaurant := insertDish(dishToInsert, restSlug.(string), dishGroup.(string))
 	return returnedRestaurant, nil
 }
