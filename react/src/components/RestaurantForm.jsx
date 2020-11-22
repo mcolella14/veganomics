@@ -33,7 +33,6 @@ import { LocationContext } from '../App'
 const genreList = [
     "Mexican",
     "American",
-    "Vegan-Only",
     "Thai",
     "Chinese"
 ]
@@ -111,17 +110,20 @@ const validation = {
 
 function createNewRestaurant (inputVals) {
     let slug = slugify(inputVals.name, {strict: true, lower: true})
-    const dishGroups = inputVals.menuSections.map(el => {
+    const dishGroups = inputVals.menuSections?.map(el => {
         return {
             name: el,
             dishes: []
         }
     })
+    if (inputVals.allVegan) {
+        inputVals.genres.push("All-Vegan");
+    }
     return (
         {
             "name": inputVals.name,
             "slug": slug,
-            "dishGroups": dishGroups,
+            "dishGroups": dishGroups || null,
             "location": {
                 "address" : inputVals.location.formatted_address,
                 "coordinates": inputVals.location.coordinates
@@ -130,10 +132,11 @@ function createNewRestaurant (inputVals) {
             "genres": inputVals.genres,
             "websiteUrl": inputVals.websiteUrl,
             "onlineOrdering": {
-                "doorDash": inputVals.doorDashUrl ? inputVals.doorDashUrl : null,
-                "uberEats": inputVals.uberEatsUrl  ? inputVals.uberEatsUrl : null,
-                "postmates": inputVals.postmatesUrl  ? inputVals.postmatesUrl : null,
-            }
+                "doorDash": inputVals.doorDashUrl || null,
+                "uberEats": inputVals.uberEatsUrl  || null,
+                "postmates": inputVals.postmatesUrl  || null,
+            },
+            "allVegan": inputVals.allVegan
         }
     )
     }
@@ -145,6 +148,7 @@ function RestaurantForm (props) {
     const { register, errors, handleSubmit, watch, setValue, control} = useForm();
     const genres = watch("genres");
     const menuSections = watch("menuSections")
+    const allVegan = watch("allVegan")
     const [addRestaurant, {data, loading}] = useMutation(mutation, {onError: e => setMutationError(e)})
 
     const [ doorDash, setDoorDash ] = useState(false)
@@ -175,9 +179,9 @@ function RestaurantForm (props) {
         e.location = location
         e.genres = genres
         e.menuSections = menuSections
+        e.allVegan = allVegan
         const restaurant = createNewRestaurant(e)
         console.log(restaurant);
-        alert(JSON.stringify(restaurant))
         addRestaurant({
             variables: {restaurant: restaurant},
         })
@@ -213,29 +217,58 @@ function RestaurantForm (props) {
                     />
                 </React.Fragment>
                 <React.Fragment>
-                    <FormControl className={classes.input}>
-                        <Controller
-                        name="menuSections"
-                        value={menuSections}
-                        control={control} 
-                        defaultValue={[]}
-                        rules={validation.menuSections}
-                        as= {
-                            <React.Fragment>
-                                <TextField
-                                    name="menuSection"
-                                    error={!!errors.menuSections}
-                                    helperText={errors.menuSections?.message}
-                                    label="Menu Section"
-                                    onChange={e => setCurrentSectionName(e.target.value)}
-                                />
-                                <Button onClick={handleSectionChange}>Add Menu Section</Button>
-                            </React.Fragment>
+                    <Controller
+                        name="allVegan"
+                        control={control}
+                        defaultValue={false}
+                        value={allVegan}
+                        as={
+                            <FormControlLabel
+                                label="All-Vegan"
+                                control={
+                                    <Checkbox
+                                        name="allVegan"
+                                        onChange={e => setValue("allVegan", e.target.checked)}
+                                    />
+                                }
+                            />
                         }
-                        >
-                        </Controller>
+                    />
+                </React.Fragment>
+                {
+                    !allVegan &&
+                    <React.Fragment>
+                    <FormControl  className={classes.input}>
+                        <Controller 
+                            name="menuSections"
+                            value={menuSections}
+                            control={control} 
+                            defaultValue={[]}
+                            rules={{
+                                validate: {
+                                    atLeastOne: (val) => {
+                                        return (val.length > 0 || allVegan) || "Must select 1 or more menu section"
+                                    }
+                                }
+                            }}
+                            as= {
+                                <React.Fragment>
+                                    <TextField
+                                        hidden={true}
+                                        name="menuSection"
+                                        error={!!errors.menuSections}
+                                        helperText={errors.menuSections?.message}
+                                        label="Menu Section (Skip if All Vegan)"
+                                        onChange={e => setCurrentSectionName(e.target.value)}
+                                    />
+                                    <Button onClick={handleSectionChange}>Add Menu Section</Button>
+                                </React.Fragment>
+                            }
+                        />
                     </FormControl>
                 </React.Fragment>
+                }
+                
                 { menuSections &&
                     menuSections.map((value) => (
                         <Chip 

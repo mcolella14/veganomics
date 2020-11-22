@@ -15,6 +15,7 @@ type Restaurant struct {
 	Genres         []string           `bson:"genres, omitempty"`
 	WebsiteUrl     string             `bson:"websiteUrl, omitempty"`
 	OnlineOrdering OnlineOrdering     `bson:"onlineOrdering, omitempty"`
+	AllVegan       bool               `bson:"allVegan"`
 }
 
 type DishGroup struct {
@@ -33,6 +34,7 @@ type RestaurantResponse struct {
 	Genres         []string           `bson:"genres, omitempty"`
 	WebsiteUrl     string             `bson:"websiteUrl, omitempty"`
 	OnlineOrdering OnlineOrdering     `bson:"onlineOrdering, omitempty"`
+	AllVegan       bool               `bson:"allVegan"`
 }
 
 type Dish struct {

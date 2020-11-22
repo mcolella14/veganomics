@@ -39,7 +39,12 @@ const useStyles = makeStyles((theme) => ({
     innerAppBar: {
         width: '100%',
         display: 'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    locationBox: {
+        backgroundColor: 'white',
+        borderRadius: '5px'
     }
     
 }));
@@ -65,12 +70,12 @@ export default function NavBar(props) {
     if (location) {
         if (changingLocation == true) {
             locationEl = (
-                <LocationSearch onLocationChange={handlePlaceChange}/>
+                <LocationSearch onLocationChange={handlePlaceChange} className={classes.locationBox}/>
             )
         }
         else {
             locationEl = (
-                <Button variant="outlined" color="default">
+                <Button variant="outlined" className={classes.locationBox}>
                     <Typography 
                         onClick={() => setChangingLocation(true)}
                         className={classes.location}
@@ -96,6 +101,7 @@ export default function NavBar(props) {
                             Veganomics
                         </Typography>
                     </Link>
+                    {locationEl}
                     <NavMenu className={classes.menuButton}/>
                 </div>
                 </Toolbar>

@@ -197,6 +197,9 @@ var restaurantType = graphql.NewObject(
 			"onlineOrdering": &graphql.Field{
 				Type: onlineOrderingType,
 			},
+			"allVegan": &graphql.Field{
+				Type: graphql.Boolean,
+			},
 		},
 	},
 )
@@ -228,6 +231,9 @@ var restaurantInputType = graphql.NewInputObject(
 			},
 			"onlineOrdering": &graphql.InputObjectFieldConfig{
 				Type: onlineOrderingInputType,
+			},
+			"allVegan": &graphql.InputObjectFieldConfig{
+				Type: graphql.Boolean,
 			},
 		},
 	},

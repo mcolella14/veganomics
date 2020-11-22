@@ -63,7 +63,8 @@ const restaurantQuery = gql`
         doorDash,
         uberEats,
         postmates
-      }
+      },
+      allVegan
     }
   }
 `;
@@ -107,7 +108,10 @@ function Restaurant (props) {
     let headerText
     let dishList = []
     const restaurant = data.restaurant[0]
-    if (restaurant.dishGroups.length > 0) {
+    if (restaurant.allVegan ) {
+      headerText = restaurant.name + ' is  an all-vegan restaurant, check out their website with the link above and go crazy!'
+    }
+    else if (restaurant.dishGroups.length > 0) {
       
       headerText = 'See something missing for ' + restaurant.name + '? Submit a new dish to be added to the site'
       restaurant.dishGroups.forEach(group => {
@@ -168,9 +172,11 @@ function Restaurant (props) {
                       dishGroups={restaurant.dishGroups.map(el => el.name)}/>
         <Typography>
           {headerText}
-          <IconButton onClick={handleModalClick} color="green">
-            <AddIcon/>
-          </IconButton>
+          {!restaurant.allVegan &&
+            <IconButton onClick={handleModalClick} color="green">
+              <AddIcon/>
+            </IconButton>
+          }
         </Typography>
       </div>
     )
