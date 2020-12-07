@@ -29,10 +29,10 @@ export default function NavMenu(props) {
                 onClose={handleClose}
                 transformOrigin={{vertical: -30}}
             >   
-                <Link href="/" underline="none" color="secondary">
+                <Link href="/" underline="none" color="primary">
                     <MenuItem onClick={handleClose}>Home</MenuItem>
                 </Link>
-                <Link href="/addRestaurant" underline="none" color="secondary">
+                <Link href="/addRestaurant" underline="none" color="primary">
                     <MenuItem onClick={handleClose}>Add a Restauarant</MenuItem>
                 </Link>
             </Menu>

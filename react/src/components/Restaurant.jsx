@@ -144,7 +144,7 @@ function Restaurant (props) {
         <ButtonGroup>
           {
             Object.entries(onlineOrderingObj).map((obj) => {
-              return <Button key={obj[0]} href={obj[1]} target="_blank" rel="noopener" color="secondary">{obj[0]}</Button>
+              return <Button key={obj[0]} href={obj[1]} target="_blank" rel="noopener" color="primary">{obj[0]}</Button>
             })
           }
         </ButtonGroup>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import './App.css';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import {
   BrowserRouter as Router,
@@ -27,7 +26,7 @@ const theme = createMuiTheme({
       main: '#00BD9D'
     },
     secondary: {
-      main: '#5F4BB6'
+      main: '#FFF'
     }
   },
 });

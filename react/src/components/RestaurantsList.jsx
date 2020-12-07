@@ -7,6 +7,10 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { LocationContext } from '../App'
 import MyLoader from "./Loader.jsx"
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import { Icon } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const restaurantsQuery = gql`
     query GetStuff($coordinates: CoordinatesInput, $filters: FiltersInput){
@@ -18,12 +22,22 @@ const restaurantsQuery = gql`
           text,
           value
         },
-        genres
+        genres,
+        allVegan
       }
     }
   `
 
+const useStyles = makeStyles((theme) => ({
+    allVeganIcon: {
+      '&:hover': {
+        cursor: 'pointer',
+     },
+    }
+  }))
+
 export default function RestaurantsList(props) {
+    const classes = useStyles()
     const {location} = useContext(LocationContext)
 
     const {loading, error, data} = useQuery(restaurantsQuery, {
@@ -53,17 +67,29 @@ export default function RestaurantsList(props) {
             </GridListTile> */}
             {
             restaurantsToDisplay.map((restaurant, i) => {
+                const icon = restaurant.allVegan ? 
+                  <Tooltip title="All-Vegan">
+                    <IconButton 
+                      color='primary'
+                      disableRipple
+                      disableFocusRipple
+                      className={classes.allVeganIcon}
+                    >
+                      V
+                    </IconButton>
+                </Tooltip> 
+                : null
                 return (
-                
-                <GridListTile className={props.classes.gridList}>
-                    <a href={'/restaurants/' + restaurant.slug}>
-                    <img src={restaurant.titleImage} alt={restaurant.name} className={props.classes.image}/>
-                        <GridListTileBar 
-                        title={restaurant.name}
-                        subtitle={restaurant.distance.text}
-                        />
-                    </a>
-                </GridListTile>
+                  <GridListTile className={props.classes.gridList}>
+                      <a href={'/restaurants/' + restaurant.slug}>
+                      <img src={restaurant.titleImage} alt={restaurant.name} className={props.classes.image}/>
+                          <GridListTileBar 
+                            title={restaurant.name}
+                            subtitle={restaurant.distance.text}
+                            actionIcon={icon}
+                          />
+                      </a>
+                  </GridListTile>
                 )
             })
             }
