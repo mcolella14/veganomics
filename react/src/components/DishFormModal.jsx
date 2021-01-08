@@ -119,7 +119,10 @@ const validation = {
 export default function DishFormModal (props) {
     const { register, control, errors, handleSubmit } = useForm();
     const classes = useStyles();
-    const [addDish, {data, error, loading}] = useMutation(mutation)
+    var mutationErr
+    const [addDish, {data, error, loading}] = useMutation(mutation, {onError(err) {
+        mutationErr = err
+    }})
 
     const onSubmit = (e) => {
         const dish = createNewDish(e, props.restaurantSlug)
@@ -127,13 +130,13 @@ export default function DishFormModal (props) {
             console.error('Something went wrong creating the dish /:');
             return
         }
-        addDish({variables: {
-            dish: dish,
-            restSlug: props.restaurantSlug,
-            dishGroup: e.dishGroup
-        }})
-        
-        window.location.reload()
+        addDish({
+            variables: {
+                dish: dish,
+                restSlug: props.restaurantSlug,
+                dishGroup: e.dishGroup
+            },
+        })
     }
 
     let dialogContent
@@ -141,10 +144,10 @@ export default function DishFormModal (props) {
     if (loading) {
         dialogContent = <Loader/>
     }
-    if (error) {
-        dialogContent = <div>Something went wrong /:</div>
+    else if (error || mutationErr) {
+        dialogContent = <div>Something went wrong, please try again later.</div>
     }
-    if (data) {
+    else if (data) {
         dialogContent = <div>Thank you for your suggestion, we'll let you know it's added!</div>
     }
     else {
@@ -185,8 +188,8 @@ export default function DishFormModal (props) {
                                 label="Dietary"
                                 
                             >
-                                <FormControlLabel value="vegan" label="Vegan" control={<Radio/>}/>
-                                <FormControlLabel value="veganAvailable" label="Vegan Available" control={<Radio/>}/>
+                                <FormControlLabel value="vegan" label="Vegan" control={<Radio color="primary"/>}/>
+                                <FormControlLabel value="veganAvailable" label="Vegan Available" control={<Radio color="primary"/>}/>
                             </RadioGroup>
                         }
                         name="dietary"
