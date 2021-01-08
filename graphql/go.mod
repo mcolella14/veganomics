@@ -9,4 +9,5 @@ require (
 	github.com/pkg/errors v0.9.1
 	go.mongodb.org/mongo-driver v1.4.0
 	googlemaps.github.io/maps v1.2.3
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )

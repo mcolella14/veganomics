@@ -163,6 +163,10 @@ func dishMutationResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 	var dishToInsert Dish
 	mapstructure.Decode(dish, &dishToInsert)
+	_, err := sendEmail(dishToInsert, restSlug.(string))
+	if err != nil {
+		return nil, errors.New("something went wrong submitting dish request /:")
+	}
 	returnedRestaurant := insertDish(dishToInsert, restSlug.(string), dishGroup.(string))
 	return returnedRestaurant, nil
 }
