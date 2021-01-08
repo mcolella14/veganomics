@@ -25,6 +25,16 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     margin: "5px 0 5px 0"
   },
+  container: {
+    padding: "30px"
+  },
+  title: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  titleHeader: {
+    paddingRight: '5px'
+  }
   // orderingLink: {
   //   borderColor: theme.palette.secondary.main,
   //   margin: "5px 0 5px 0"
@@ -100,7 +110,11 @@ function Restaurant (props) {
     });
 
     if (loading) {
-      return <Loader/>
+      return (
+        <div className={classes.container}>
+          <Loader/>
+        </div>
+        )
     }
     if (error) {
       return <p>Something went wrong /:</p>
@@ -155,8 +169,13 @@ function Restaurant (props) {
     console.log(onlineOrderingButtons)
 
     return (
-      <div>
-        <Typography variant="h3">{restaurant.name}</Typography>
+      <div className={classes.container}>
+        <div className={classes.title}>
+          <Typography variant="h3" className={classes.titleHeader}>{restaurant.name}</Typography>
+          {restaurant.allVegan &&
+            <Typography color="primary">ALL-VEGAN</Typography>
+          }
+        </div>
         {restaurant.websiteUrl &&
           <Button href={restaurant.websiteUrl} className={classes.websiteLink} target="_blank" rel="noopener">
             {restaurant.websiteUrl.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0]}
@@ -173,7 +192,7 @@ function Restaurant (props) {
         <Typography>
           {headerText}
           {!restaurant.allVegan &&
-            <IconButton onClick={handleModalClick} color="green">
+            <IconButton onClick={handleModalClick} color="primary">
               <AddIcon/>
             </IconButton>
           }
