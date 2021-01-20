@@ -12,7 +12,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function DishModal (props) {
     return (
-        <Dialog onClose={props.handleClick} open={props.open} TransitionComponent={Transition}>
+        <Dialog onClose={props.handleClick} open={props.open} TransitionComponent={Transition} fullWidth={true} maxWidth="xs">
             <DialogTitle id="simple-dialog-title">{props.dish.name}</DialogTitle>
             <DialogContent dividers={true}>
                 <DialogContentText color="inherit">

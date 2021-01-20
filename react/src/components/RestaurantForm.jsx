@@ -5,7 +5,6 @@ import {TextField, Button, FormControlLabel} from '@material-ui/core'
 import { gql, useMutation } from '@apollo/client';
 import MyLoader from "./Loader.jsx";
 import FormMap from "./Map";
-import "./RestaurantForm.css"
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Select from '@material-ui/core/Select';
@@ -46,7 +45,14 @@ const useStyles = makeStyles((theme) => ({
         width: '50%'
     },
     mapInput: {
-        paddingBottom: '30px'
+        paddingBottom: '30px',
+        width: '500px',
+        marginTop: '50px'
+    },
+    restaurantForm: {
+        'display': 'flex',
+        'flexDirection': 'column',
+        'alignItems': 'center'
     },
     submitButton: {
         marginTop: '35px'
@@ -205,7 +211,7 @@ function RestaurantForm (props) {
     }
     return (
         <div>
-            <form id="restaurant-form" onSubmit={handleSubmit(onSubmit)}>
+            <form className={classes.restaurantForm} onSubmit={handleSubmit(onSubmit)}>
                 <React.Fragment>
                     <TextField 
                         error={!!errors.name}
@@ -350,9 +356,7 @@ function RestaurantForm (props) {
                     <FormGroup>
                         <div className={classes.onlineBox}>
                             <FormControlLabel
-                                control={<Checkbox checked={doorDash} 
-                                onChange={() => setDoorDash(!doorDash)} 
-                                name="doorDash" />}
+                                control={<Checkbox checked={doorDash} onChange={() => setDoorDash(!doorDash)} name="doorDash" color="primary"/>}
                                 label="DoorDash"
                             />
                             {doorDash &&
@@ -367,7 +371,7 @@ function RestaurantForm (props) {
                         </div>
                         <div className={classes.onlineBox}>
                             <FormControlLabel
-                                control={<Checkbox checked={uberEats} onChange={() => setUberEats(!uberEats)} name="uberEats" />}
+                                control={<Checkbox checked={uberEats} onChange={() => setUberEats(!uberEats)} name="uberEats" color="primary"/>}
                                 label="Uber Eats"
                             />
                             {uberEats &&
@@ -382,7 +386,7 @@ function RestaurantForm (props) {
                         </div>
                         <div className={classes.onlineBox}>
                             <FormControlLabel
-                                control={<Checkbox checked={postmates} onChange={() => setPostmates(!postmates)} name="postmates" />}
+                                control={<Checkbox checked={postmates} onChange={() => setPostmates(!postmates)} name="postmates" color="primary"/>}
                                 label="Postmates"
                             />
                             {postmates &&
